@@ -4,6 +4,7 @@
 let video;
 let handPose;
 let hands = [];
+let circleX, circleY, circleSize;
 
 function preload() {
   // Initialize HandPose model with flipped video input
@@ -23,6 +24,11 @@ function setup() {
   video = createCapture(VIDEO, { flipped: true });
   video.hide();
 
+  // Initialize circle position and size
+  circleX = width / 2;
+  circleY = height / 2;
+  circleSize = 100;
+
   // Start detecting hands
   handPose.detectStart(video, gotHands);
 }
@@ -30,10 +36,35 @@ function setup() {
 function draw() {
   image(video, 0, 0);
 
+  // Draw the circle
+  fill(0, 255, 0, 150); // Semi-transparent green
+  noStroke();
+  circle(circleX, circleY, circleSize);
+
   // Ensure at least one hand is detected
   if (hands.length > 0) {
     for (let hand of hands) {
       if (hand.confidence > 0.1) {
+        // Get the position of the index finger tip (keypoint 8)
+        let indexFinger = hand.keypoints[8];
+
+        // Check if the index finger is touching the circle
+        let d = dist(indexFinger.x, indexFinger.y, circleX, circleY);
+        if (d < circleSize / 2) {
+          // Move the circle to follow the index finger
+          circleX = indexFinger.x;
+          circleY = indexFinger.y;
+        }
+
+        // Draw the index finger tip
+        if (hand.handedness == "Left") {
+          fill(255, 0, 255); // Left hand color
+        } else {
+          fill(255, 255, 0); // Right hand color
+        }
+        noStroke();
+        circle(indexFinger.x, indexFinger.y, 16);
+
         // Loop through keypoints and draw circles
         for (let i = 0; i < hand.keypoints.length; i++) {
           let keypoint = hand.keypoints[i];
