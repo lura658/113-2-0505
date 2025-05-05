@@ -82,6 +82,43 @@ function draw() {
             line(start.x, start.y, end.x, end.y);
           }
         }
+
+        // Connect keypoints 13 to 16 with lines
+        if (hand.keypoints.length > 16) {
+          for (let i = 13; i < 16; i++) {
+            let start = hand.keypoints[i];
+            let end = hand.keypoints[i + 1];
+            line(start.x, start.y, end.x, end.y);
+          }
+        }
+
+        // Connect keypoints 17 to 20 with lines
+        if (hand.keypoints.length > 20) {
+          for (let i = 17; i < 20; i++) {
+            let start = hand.keypoints[i];
+            let end = hand.keypoints[i + 1];
+            line(start.x, start.y, end.x, end.y);
+          }
+        }
+
+        // Connect keypoints 5 to 0 and 17 to 0
+        if (hand.keypoints.length > 17) {
+          if (hand.handedness == "Left") {
+            stroke(255, 0, 255); // Left hand color
+          } else {
+            stroke(255, 255, 0); // Right hand color
+          }
+          strokeWeight(2);
+
+          // Connect keypoint 5 to 0
+          let start5 = hand.keypoints[5];
+          let end0 = hand.keypoints[0];
+          line(start5.x, start5.y, end0.x, end0.y);
+
+          // Connect keypoint 17 to 0
+          let start17 = hand.keypoints[17];
+          line(start17.x, start17.y, end0.x, end0.y);
+        }
       }
     }
   }
